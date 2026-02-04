@@ -199,9 +199,6 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
 
     /* 초기화 */
     fun reset() {
-        tickerJob?.cancel()
-        tickerJob = null
-
         val state = sudokuState.value
         val cells = state.cells
 
@@ -215,9 +212,7 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
             }
         }
 
-        _sudokuState.update { it.copy(timerState = TimerState(), cells = newCells, selectCellIdx = null, isMemo = false) }
-
-        startTimer()
+        _sudokuState.update { it.copy(cells = newCells, selectCellIdx = null, isMemo = false) }
     }
 
     /* 종료 */

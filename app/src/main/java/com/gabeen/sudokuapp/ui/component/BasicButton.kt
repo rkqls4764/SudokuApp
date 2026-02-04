@@ -106,7 +106,7 @@ fun BasicIconButton(icon: ImageVector, name: String, onClick: () -> Unit) {
 @Composable
 fun BasicButton(name: String, wrapContent: Boolean = false, onClick: () -> Unit) {
     Button(
-        modifier = Modifier.height(50.dp).then(if (wrapContent) Modifier.wrapContentWidth() else Modifier.fillMaxWidth()),
+        modifier = Modifier.height(40.dp).then(if (wrapContent) Modifier.wrapContentWidth() else Modifier.fillMaxWidth()),
         contentPadding = if (wrapContent) PaddingValues(horizontal = 12.dp) else PaddingValues(0.dp),
         onClick = { onClick() },
         shape = RoundedCornerShape(10.dp),

@@ -29,15 +29,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -52,9 +51,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.gabeen.sudokuapp.ui.component.BasicButton
 import com.gabeen.sudokuapp.ui.component.BasicIconButton
+import com.gabeen.sudokuapp.ui.component.HomeTopBar
 import com.gabeen.sudokuapp.ui.component.PressCheckIconButton
-import com.gabeen.sudokuapp.ui.component.SettingDialog
-import com.gabeen.sudokuapp.ui.component.SettingTopBar
 import com.gabeen.sudokuapp.ui.theme.BasicBlue
 import com.gabeen.sudokuapp.ui.theme.BgBlue
 import com.gabeen.sudokuapp.ui.theme.FixedCellBg
@@ -70,34 +68,23 @@ import com.gabeen.sudokuapp.ui.theme.SoftBlack
 fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel) {
     val sudokuState by sudokuViewModel.sudokuState.collectAsState()
 
-    var openSetting by remember { mutableStateOf(false) }
-    if (openSetting) {
-        SettingDialog(
-            onClickHome = {
-                openSetting = false
-                navController.popBackStack()
-            },
-            onClickReset = {
-                openSetting = false
-                sudokuViewModel.reset()
-            },
-            onDismiss = {
-                openSetting = false
-                sudokuViewModel.startTimer()
-            }
-        )
-    }
-
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
-            SettingTopBar(
+            HomeTopBar(
                 title = sudokuState.timerState.elapsedText, // 타이머 출력
-                onClickActIcon = {
-                    sudokuViewModel.pauseTimer()
-                    openSetting = true
-                }
+                onClickActIcon = { navController.popBackStack() }
             )
+        },
+        bottomBar = {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp).padding(bottom = 10.dp)
+            ) {
+                BasicButton(
+                    name = if (!sudokuState.isFinished) "제출하기" else "홈으로 돌아가기",
+                    onClick = { if (!sudokuState.isFinished) sudokuViewModel.finish() else navController.popBackStack() }
+                )
+            }
         }
     ) { paddingValues ->
         Column(
@@ -105,8 +92,7 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
                 .padding(paddingValues)
                 .fillMaxSize()
                 .pointerInput(Unit) { detectTapGestures(onTap = { sudokuViewModel.initSelectedCell() }) }
-                .padding(horizontal = 10.dp)
-                .padding(top = 10.dp, bottom = 20.dp),
+                .padding(horizontal = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
@@ -120,13 +106,19 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
                 )
 
                 if (!sudokuState.isFinished) {
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
+                        BasicIconButton(
+                            icon = Icons.Default.Refresh,
+                            name = "초기화",
+                            onClick = { sudokuViewModel.reset() }
+                        )
+
                         BasicIconButton(
                             icon = Icons.Default.Clear,
                             name = "지우기",
@@ -161,15 +153,6 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
                         )
                     }
                 }
-            }
-
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
-            ) {
-                BasicButton(
-                    name = if (!sudokuState.isFinished) "제출하기" else "홈으로 돌아가기",
-                    onClick = { if (!sudokuState.isFinished) sudokuViewModel.finish() else navController.popBackStack() }
-                )
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.gabeen.sudokuapp.ui.component
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -13,10 +13,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import com.gabeen.sudokuapp.ui.theme.SoftBlack
 
-/* 설정 상단바 */
+/* 홈 상단바 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingTopBar(
+fun HomeTopBar(
     title: String,                      // 제목
     onClickActIcon: () -> Unit = {}     // 액션 아이콘 클릭 이벤트
 ) {
@@ -35,8 +35,8 @@ fun SettingTopBar(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "액션 버튼",
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "홈 버튼",
                     tint = Color.Gray
                 )
             }

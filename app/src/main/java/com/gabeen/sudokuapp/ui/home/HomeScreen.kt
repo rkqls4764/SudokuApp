@@ -45,54 +45,67 @@ import com.gabeen.sudokuapp.ui.theme.SoftBlack
 @Composable
 fun HomeScreen(navController: NavController, sudokuViewModel: SudokuViewModel) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp).padding(top = 120.dp, bottom = 80.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = "가벼운 스도쿠",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            color = SoftBlack
-        )
-
-        Spacer(modifier = Modifier.height(220.dp))
+        Box(
+            modifier = Modifier.fillMaxWidth().weight(2f),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "가벼운 스도쿠",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = SoftBlack
+            )
+        }
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.weight(5f).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Bottom
         ) {
             // 난이도 3개(비우는 칸 수로 난이도 설정)
-            LevelItem(
-                text = "쉬움",
-                record = sudokuViewModel.getRecord(Difficulty.EASY),
-                color = LevelYellow,
-                onClick = {
-                    sudokuViewModel.startSudoku(blanks = 20, difficulty = Difficulty.EASY)
-                    navController.navigate("sudoku")
-                }
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                LevelItem(
+                    modifier = Modifier.weight(1f, fill = false),
+                    text = "쉬움",
+                    record = sudokuViewModel.getRecord(Difficulty.EASY),
+                    color = LevelYellow,
+                    onClick = {
+                        sudokuViewModel.startSudoku(blanks = 20, difficulty = Difficulty.EASY)
+                        navController.navigate("sudoku")
+                    }
+                )
 
-            LevelItem(
-                text = "보통",
-                record = sudokuViewModel.getRecord(Difficulty.NORMAL),
-                color = LevelGreen,
-                onClick = {
-                    sudokuViewModel.startSudoku(blanks = 35, difficulty = Difficulty.NORMAL)
-                    navController.navigate("sudoku")
-                }
-            )
+                LevelItem(
+                    modifier = Modifier.weight(1f, fill = false),
+                    text = "보통",
+                    record = sudokuViewModel.getRecord(Difficulty.NORMAL),
+                    color = LevelGreen,
+                    onClick = {
+                        sudokuViewModel.startSudoku(blanks = 35, difficulty = Difficulty.NORMAL)
+                        navController.navigate("sudoku")
+                    }
+                )
 
-            LevelItem(
-                text = "어려움",
-                record = sudokuViewModel.getRecord(Difficulty.HARD),
-                color = LevelRed,
-                onClick = {
-                    sudokuViewModel.startSudoku(blanks = 50, difficulty = Difficulty.HARD)
-                    navController.navigate("sudoku")
+                LevelItem(
+                    modifier = Modifier.weight(1f, fill = false),
+                    text = "어려움",
+                    record = sudokuViewModel.getRecord(Difficulty.HARD),
+                    color = LevelRed,
+                    onClick = {
+                        sudokuViewModel.startSudoku(blanks = 50, difficulty = Difficulty.HARD)
+                        navController.navigate("sudoku")
+                    }
+                )
 
-                }
-            )
+                Spacer(modifier = Modifier.weight(0.1f))
+            }
         }
     }
 }
@@ -100,6 +113,7 @@ fun HomeScreen(navController: NavController, sudokuViewModel: SudokuViewModel) {
 /* 난이도 아이템 */
 @Composable
 private fun LevelItem(
+    modifier: Modifier,
     text: String,
     record: String,
     color: Color,
@@ -116,7 +130,7 @@ private fun LevelItem(
     )
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .shadow(
                 elevation = 1.dp,
