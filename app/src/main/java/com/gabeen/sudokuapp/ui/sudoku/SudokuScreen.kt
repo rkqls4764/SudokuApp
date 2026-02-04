@@ -265,7 +265,7 @@ private fun SudokuCell(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ) { if (!cellState.fixed) onClick() },
+            ) { onClick() },
         contentAlignment = Alignment.Center
     ) {
         // 입력한 숫자가 없으면 메모 출력
