@@ -2,9 +2,11 @@ package com.gabeen.sudokuapp.ui.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -28,20 +30,23 @@ import com.gabeen.sudokuapp.ui.theme.BasicBlue
 
 /* 눌림 여부 체크 아이콘 버튼 */
 @Composable
-fun PressCheckIconButton(icon: ImageVector, name: String, isPressed: Boolean, onClick: () -> Unit) {
+fun PressCheckIconButton(modifier: Modifier, icon: ImageVector, name: String, isPressed: Boolean, onClick: () -> Unit) {
     val color = if (isPressed) BasicBlue else Color.Gray
     val rotation by animateFloatAsState(
         targetValue = if (isPressed) 0f else 45f
     )
 
     Button(
+        modifier = modifier,
         onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, color)
+        border = BorderStroke(1.dp, color),
+        contentPadding = PaddingValues(horizontal = 8.dp)
     ) {
         Row(
-            modifier = Modifier.wrapContentWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Icon(
                 imageVector = icon,
@@ -52,8 +57,6 @@ fun PressCheckIconButton(icon: ImageVector, name: String, isPressed: Boolean, on
                 }
             )
 
-            Spacer(modifier = Modifier.width(14.dp))
-
             Text(
                 text = name,
                 fontSize = 16.sp,
@@ -61,25 +64,26 @@ fun PressCheckIconButton(icon: ImageVector, name: String, isPressed: Boolean, on
                 color = color,
                 maxLines = 1
             )
-
-            Spacer(modifier = Modifier.width(10.dp))
         }
     }
 }
 
 /* 아이콘 버튼 */
 @Composable
-fun BasicIconButton(icon: ImageVector, name: String, onClick: () -> Unit) {
+fun BasicIconButton(modifier: Modifier, icon: ImageVector, name: String, onClick: () -> Unit) {
     val color = Color.Gray
 
     Button(
+        modifier = modifier,
         onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, color)
+        border = BorderStroke(1.dp, color),
+        contentPadding = PaddingValues(horizontal = 8.dp)
     ) {
         Row(
-            modifier = Modifier.wrapContentWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Icon(
                 imageVector = icon,
@@ -87,8 +91,6 @@ fun BasicIconButton(icon: ImageVector, name: String, onClick: () -> Unit) {
                 tint = color
             )
 
-            Spacer(modifier = Modifier.width(14.dp))
-
             Text(
                 text = name,
                 fontSize = 16.sp,
@@ -96,8 +98,6 @@ fun BasicIconButton(icon: ImageVector, name: String, onClick: () -> Unit) {
                 color = color,
                 maxLines = 1
             )
-
-            Spacer(modifier = Modifier.width(10.dp))
         }
     }
 }

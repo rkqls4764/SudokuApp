@@ -111,21 +111,24 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         BasicIconButton(
+                            modifier = Modifier.weight(1f),
                             icon = Icons.Default.Refresh,
                             name = "초기화",
                             onClick = { sudokuViewModel.reset() }
                         )
 
                         BasicIconButton(
+                            modifier = Modifier.weight(1f),
                             icon = Icons.Default.Clear,
                             name = "지우기",
                             onClick = { sudokuViewModel.deleteNum() }
                         )
 
                         PressCheckIconButton(
+                            modifier = Modifier.weight(1f),
                             icon = Icons.Default.Edit,
                             name = "메모하기",
                             isPressed = sudokuState.isMemo,
