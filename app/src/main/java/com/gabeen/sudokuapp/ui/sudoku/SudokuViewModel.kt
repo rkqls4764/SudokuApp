@@ -164,7 +164,7 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
         _sudokuState.update { it.copy(isMemo = !it.isMemo) }
     }
 
-    /* 숫자 지우기 */
+    /* 숫자, 메모 지우기 */
     fun deleteNum() {
         val state = _sudokuState.value
         val idx = state.selectCellIdx
@@ -188,7 +188,7 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
                     if (c != col) {
                         cell
                     } else {
-                        cell.copy(value = null)
+                        cell.copy(value = null, memo = emptySet())
                     }
                 }
             }
