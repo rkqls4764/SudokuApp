@@ -155,6 +155,9 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
                                 newRemaining[value]++
                                 cell.copy(value = null)
                             } else {
+                                if (cell.value != null) {
+                                    newRemaining[cell.value]++
+                                }
                                 newRemaining[value]--
                                 cell.copy(value = value)
                             }
