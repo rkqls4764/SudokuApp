@@ -1,15 +1,85 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# =================================================
+# Android / Android Studio / Kotlin (toptal 기반)
+# =================================================
+
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Local configuration
 local.properties
+*/local.properties
+
+# Logs
+*.log
+*.hprof
+
+# Android Studio generated
+captures/
+.externalNativeBuild/
+.cxx/
+output.json
+
+# APK / AAB
+*.apk
+*.aab
+*.ap_
+
+# IntelliJ / Android Studio
+*.iml
+.idea/
+*.ipr
+*.iws
+*.swp
+*~
+
+# Navigation editor
+.navigation/
+
+# Kotlin / Java build outputs
+*.class
+*.dex
+bin/
+gen/
+out/
+
+# Archives / packages
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# NDK
+obj/
+
+# Keystore (절대 커밋 금지)
+*.jks
+*.keystore
+keystore.properties
+.signing/
+
+# Google services (보안 주의)
+google-services.json
+
+# Crash / VM
+hs_err_pid*
+replay_pid*
+
+# Legacy / plugins
+.idea_modules/
+atlassian-ide-plugin.xml
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Allow gradle wrapper
+!/gradle/wrapper/gradle-wrapper.jar
