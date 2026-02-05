@@ -8,6 +8,7 @@ data class SudokuState(
     val answer: List<List<Int>> = emptyList(),      // 정답
     val cells: List<List<CellState>> = emptyList(), // 스도쿠 칸 상태
     val selectCellIdx: Int? = null,                 // 선택한 칸
+    val remainingCount: List<Int> = emptyList(),    // 채워야할 숫자 수
     val isMemo: Boolean = false,                    // 메모 모드 여부
     val isFinished: Boolean = false,                // 종료 여부
     val isNewRecord: Boolean = false                // 기록 갱신 여부

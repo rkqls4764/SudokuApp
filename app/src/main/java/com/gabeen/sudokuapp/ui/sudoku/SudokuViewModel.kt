@@ -41,10 +41,14 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
             puzzle[r][c] = 0
         }
 
+        // 채워야할 숫자 수
+        val remainingCount = IntArray(10) { 9 }
+
         // CellState로 변환 + fixed 설정
         val cells: List<List<CellState>> =
             puzzle.map { row ->
                 row.map { v ->
+                    if (v != 0) remainingCount[v]--
                     CellState(
                         value = if (v == 0) null else v,
                         fixed = v != 0
@@ -57,6 +61,7 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
             timerState = TimerState(),
             answer = answer,
             cells = cells,
+            remainingCount = remainingCount.toList(),
             isFinished = false,
             isNewRecord = false
         )
@@ -107,7 +112,6 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
 
         val row = idx / 9
         val col = idx % 9
-
         val targetCell = state.cells[row][col]
 
         // 고정 칸은 수정 불가
@@ -115,6 +119,8 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
 
         // 값이 있는 상태에서 메모 수정 불가
         if (state.isMemo && targetCell.value != null) return
+
+        val newRemaining = state.remainingCount.toMutableList()
 
         val newCells = if (state.isMemo) {
             state.cells.mapIndexed { r, rowList ->
@@ -146,8 +152,10 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
                         } else {
                             // 이미 입력한 값과 같은 값 입력이 들어오면 지우기
                             if (cell.value == value) {
+                                newRemaining[value]++
                                 cell.copy(value = null)
                             } else {
+                                newRemaining[value]--
                                 cell.copy(value = value)
                             }
                         }
@@ -156,7 +164,7 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
             }
         }
 
-        _sudokuState.value = state.copy(cells = newCells)
+        _sudokuState.value = state.copy(cells = newCells, remainingCount = newRemaining)
     }
 
     /* 메모 모드 변경 */
@@ -164,7 +172,7 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
         _sudokuState.update { it.copy(isMemo = !it.isMemo) }
     }
 
-    /* 숫자, 메모 지우기 */
+    /* 한 칸 숫자, 메모 지우기 */
     fun deleteNum() {
         val state = _sudokuState.value
         val idx = state.selectCellIdx
@@ -174,11 +182,15 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
 
         val row = idx / 9
         val col = idx % 9
-
         val targetCell = state.cells[row][col]
 
         // 고정 칸은 수정 불가
         if (targetCell.fixed) return
+
+        val newRemaining = state.remainingCount.toMutableList()
+        if (targetCell.value != null) {
+            newRemaining[targetCell.value]++
+        }
 
         val newCells = state.cells.mapIndexed { r, rowList ->
             if (r != row) {
@@ -194,25 +206,27 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
             }
         }
 
-        _sudokuState.value = state.copy(cells = newCells)
+        _sudokuState.value = state.copy(cells = newCells, remainingCount = newRemaining)
     }
 
-    /* 초기화 */
+    /* 전체 숫자, 메모 초기화 */
     fun reset() {
         val state = sudokuState.value
         val cells = state.cells
+        val newRemaining = MutableList(10) { 9 }
 
         val newCells = cells.map { row ->
             row.map { cell ->
                 if (!cell.fixed) {
                     CellState()
                 } else {
+                    newRemaining[cell.value!!]--
                     cell
                 }
             }
         }
 
-        _sudokuState.update { it.copy(cells = newCells, selectCellIdx = null, isMemo = false) }
+        _sudokuState.update { it.copy(cells = newCells, selectCellIdx = null, remainingCount = newRemaining, isMemo = false) }
     }
 
     /* 종료 */

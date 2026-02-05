@@ -136,9 +136,10 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     NumberPad(
+                        remainingCount = sudokuState.remainingCount,
                         onClick = { sudokuViewModel.inputNum(it) }
                     )
                 }
@@ -329,7 +330,7 @@ private fun NotesGrid(
 
 /* 숫자 입력 바 */
 @Composable
-private fun NumberPad(onClick: (Int) -> Unit) {
+private fun NumberPad(remainingCount: List<Int>, onClick: (Int) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -338,6 +339,7 @@ private fun NumberPad(onClick: (Int) -> Unit) {
         for (num in 1..9) {
             NumberButton(
                 num = num,
+                cnt = remainingCount[num],
                 onClick = { onClick(num) },
                 modifier = Modifier.weight(1f)
             )
@@ -349,6 +351,7 @@ private fun NumberPad(onClick: (Int) -> Unit) {
 @Composable
 private fun NumberButton(
     num: Int,
+    cnt: Int,
     onClick: () -> Unit,
     modifier: Modifier
 ) {
@@ -382,14 +385,22 @@ private fun NumberButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color.White)
-                    .padding(vertical = 10.dp, horizontal = 4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 4.dp)
+                    .padding(top = 10.dp, bottom = 6.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     text = num.toString(),
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 20.sp,
                     color = SoftBlack
+                )
+
+                Text(
+                    text = cnt.toString(),
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    color = Color.Gray
                 )
             }
         }
