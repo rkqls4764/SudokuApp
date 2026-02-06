@@ -36,7 +36,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -51,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.gabeen.sudokuapp.ui.component.BasicButton
 import com.gabeen.sudokuapp.ui.component.BasicIconButton
+import com.gabeen.sudokuapp.ui.component.BlockTouchOverlay
 import com.gabeen.sudokuapp.ui.component.HomeTopBar
 import com.gabeen.sudokuapp.ui.component.PressCheckIconButton
 import com.gabeen.sudokuapp.ui.theme.BasicBlue
@@ -68,96 +71,123 @@ import com.gabeen.sudokuapp.ui.theme.SoftBlack
 fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel) {
     val sudokuState by sudokuViewModel.sudokuState.collectAsState()
 
+    var isClosing by remember { mutableStateOf(false) }
+
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
             HomeTopBar(
                 title = sudokuState.timerState.elapsedText, // 타이머 출력
-                onClickActIcon = { navController.popBackStack() }
+                onClickActIcon = {
+                    if (isClosing) return@HomeTopBar
+                    isClosing = true
+                    navController.popBackStack()
+                }
             )
         },
         bottomBar = {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp).padding(bottom = 10.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
+                    .padding(bottom = 10.dp)
             ) {
                 BasicButton(
                     name = if (!sudokuState.isFinished) "제출하기" else "홈으로 돌아가기",
-                    onClick = { if (!sudokuState.isFinished) sudokuViewModel.finish() else navController.popBackStack() }
+                    onClick = {
+                        if (!sudokuState.isFinished) {
+                            sudokuViewModel.finish()
+                        } else {
+                            if (isClosing) return@BasicButton
+                            isClosing = true
+                            navController.popBackStack()
+                        }
+                    }
                 )
             }
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .pointerInput(Unit) { detectTapGestures(onTap = { sudokuViewModel.initSelectedCell() }) }
-                .padding(horizontal = 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Column {
-                SudokuBoard(
-                    cells = sudokuState.cells,
-                    answer = sudokuState.answer,
-                    selectedCellIdx = sudokuState.selectCellIdx,
-                    isFinished = sudokuState.isFinished,
-                    onSelectIdx = { sudokuViewModel.selectCell(it) }
-                )
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .pointerInput(Unit) { detectTapGestures(onTap = { sudokuViewModel.initSelectedCell() }) }
+                    .padding(horizontal = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    SudokuBoard(
+                        cells = sudokuState.cells,
+                        answer = sudokuState.answer,
+                        selectedCellIdx = sudokuState.selectCellIdx,
+                        isFinished = sudokuState.isFinished,
+                        onSelectIdx = { sudokuViewModel.selectCell(it) }
+                    )
 
-                if (!sudokuState.isFinished) {
-                    Spacer(modifier = Modifier.height(20.dp))
+                    if (!sudokuState.isFinished) {
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        BasicIconButton(
-                            modifier = Modifier.weight(1f),
-                            icon = Icons.Default.Refresh,
-                            name = "초기화",
-                            onClick = { sudokuViewModel.reset() }
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            BasicIconButton(
+                                modifier = Modifier.weight(1f),
+                                icon = Icons.Default.Refresh,
+                                name = "초기화",
+                                onClick = { sudokuViewModel.reset() }
+                            )
 
-                        BasicIconButton(
-                            modifier = Modifier.weight(1f),
-                            icon = Icons.Default.Clear,
-                            name = "지우기",
-                            onClick = { sudokuViewModel.deleteNum() }
-                        )
+                            BasicIconButton(
+                                modifier = Modifier.weight(1f),
+                                icon = Icons.Default.Clear,
+                                name = "지우기",
+                                onClick = { sudokuViewModel.deleteNum() }
+                            )
 
-                        PressCheckIconButton(
-                            modifier = Modifier.weight(1f),
-                            icon = Icons.Default.Edit,
-                            name = "메모하기",
-                            isPressed = sudokuState.isMemo,
-                            onClick = { sudokuViewModel.changeMemoMode() }
+                            PressCheckIconButton(
+                                modifier = Modifier.weight(1f),
+                                icon = Icons.Default.Edit,
+                                name = "메모하기",
+                                isPressed = sudokuState.isMemo,
+                                onClick = { sudokuViewModel.changeMemoMode() }
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        NumberPad(
+                            remainingCount = sudokuState.remainingCount,
+                            onClick = { sudokuViewModel.inputNum(it) }
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    NumberPad(
-                        remainingCount = sudokuState.remainingCount,
-                        onClick = { sudokuViewModel.inputNum(it) }
-                    )
-                }
-
-                if (sudokuState.isNewRecord) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 70.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "기록이 갱신되었습니다!",
-                            color = SoftBlack,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 20.sp
-                        )
+                    if (sudokuState.isNewRecord) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 70.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "기록이 갱신되었습니다!",
+                                color = SoftBlack,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 20.sp
+                            )
+                        }
                     }
                 }
             }
+
+            BlockTouchOverlay(
+                enabled = isClosing
+            )
         }
     }
 }
@@ -177,7 +207,9 @@ private fun SudokuBoard(
     val answerFlat = remember(answer) { answer.flatten()}
 
     BoxWithConstraints(
-        modifier = Modifier.fillMaxWidth().aspectRatio(1f)
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
     ) {
         val boardSize = maxWidth
         val cellSize = boardSize / 9
@@ -291,13 +323,17 @@ private fun NotesGrid(
     notes: Set<Int>
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(2.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         for (row in 0 until 3) {
             Row(
-                modifier = Modifier.weight(1f).fillMaxWidth(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -305,7 +341,9 @@ private fun NotesGrid(
                     val number = row * 3 + col + 1
 
                     Box(
-                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
                         contentAlignment = Alignment.Center
                     ) {
                         if (number in notes) {
@@ -332,7 +370,9 @@ private fun NotesGrid(
 @Composable
 private fun NumberPad(remainingCount: List<Int>, onClick: (Int) -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
