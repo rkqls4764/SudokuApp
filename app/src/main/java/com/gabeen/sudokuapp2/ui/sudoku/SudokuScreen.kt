@@ -1,5 +1,6 @@
-package com.gabeen.sudokuapp.ui.sudoku
+package com.gabeen.sudokuapp2.ui.sudoku
 
+import android.app.Activity
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
@@ -45,33 +46,49 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.gabeen.sudokuapp.ui.component.BasicButton
-import com.gabeen.sudokuapp.ui.component.BasicIconButton
-import com.gabeen.sudokuapp.ui.component.BlockTouchOverlay
-import com.gabeen.sudokuapp.ui.component.HomeTopBar
-import com.gabeen.sudokuapp.ui.component.PressCheckIconButton
-import com.gabeen.sudokuapp.ui.theme.BasicBlue
-import com.gabeen.sudokuapp.ui.theme.BgBlue
-import com.gabeen.sudokuapp.ui.theme.FixedCellBg
-import com.gabeen.sudokuapp.ui.theme.FixedNumberColor
-import com.gabeen.sudokuapp.ui.theme.LevelGreen
-import com.gabeen.sudokuapp.ui.theme.LevelGreenBg
-import com.gabeen.sudokuapp.ui.theme.LevelRed
-import com.gabeen.sudokuapp.ui.theme.LevelRedBg
-import com.gabeen.sudokuapp.ui.theme.SoftBlack
+import com.gabeen.sudokuapp2.R
+import com.gabeen.sudokuapp2.ui.ad.InterstitialAdManager
+import com.gabeen.sudokuapp2.ui.component.BasicButton
+import com.gabeen.sudokuapp2.ui.component.BasicIconButton
+import com.gabeen.sudokuapp2.ui.component.BlockTouchOverlay
+import com.gabeen.sudokuapp2.ui.component.HomeTopBar
+import com.gabeen.sudokuapp2.ui.component.PressCheckIconButton
+import com.gabeen.sudokuapp2.ui.theme.BasicBlue
+import com.gabeen.sudokuapp2.ui.theme.BgBlue
+import com.gabeen.sudokuapp2.ui.theme.FixedCellBg
+import com.gabeen.sudokuapp2.ui.theme.FixedNumberColor
+import com.gabeen.sudokuapp2.ui.theme.LevelGreen
+import com.gabeen.sudokuapp2.ui.theme.LevelGreenBg
+import com.gabeen.sudokuapp2.ui.theme.LevelRed
+import com.gabeen.sudokuapp2.ui.theme.LevelRedBg
+import com.gabeen.sudokuapp2.ui.theme.SoftBlack
 
 /* 스도쿠 화면 */
 @Composable
 fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel) {
+    val context = LocalContext.current
+    val activity = context as Activity
+    val adUnitId = stringResource(R.string.admob_interstitial_after_result)
+//    val adUnitId = stringResource(R.string.admob_interstitial_test)
+
     val sudokuState by sudokuViewModel.sudokuState.collectAsState()
 
     var isClosing by remember { mutableStateOf(false) }
+
+    // 전면 광고 로드
+    val adManager = remember {
+        InterstitialAdManager(context).also {
+            it.loadAd(adUnitId)
+        }
+    }
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -99,8 +116,11 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
                             sudokuViewModel.finish()
                         } else {
                             if (isClosing) return@BasicButton
-                            isClosing = true
-                            navController.popBackStack()
+
+                            adManager.showAd(activity) {
+                                isClosing = true
+                                navController.popBackStack()
+                            }
                         }
                     }
                 )

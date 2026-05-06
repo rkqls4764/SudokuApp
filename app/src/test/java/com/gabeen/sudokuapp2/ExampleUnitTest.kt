@@ -1,4 +1,4 @@
-package com.gabeen.sudokuapp
+package com.gabeen.sudokuapp2
 
 import org.junit.Test
 

@@ -5,14 +5,14 @@ plugins {
 }
 
 android {
-    namespace = "com.gabeen.sudokuapp"
+    namespace = "com.gabeen.sudokuapp2"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.gabeen.sudokuapp"
+        applicationId = "com.gabeen.sudokuapp2"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
+        versionCode = 6
         versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -61,4 +61,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+
+    // AdMob
+    implementation("com.google.android.gms:play-services-ads:23.6.0")
 }

@@ -1,4 +1,4 @@
-package com.gabeen.sudokuapp.ui.theme
+package com.gabeen.sudokuapp2.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

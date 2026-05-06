@@ -1,4 +1,4 @@
-package com.gabeen.sudokuapp.ui.theme
+package com.gabeen.sudokuapp2.ui.theme
 
 import android.content.res.Configuration
 import android.os.Build

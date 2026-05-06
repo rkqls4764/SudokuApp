@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">가벼운 스도쿠</string>
+
+    <string name="admob_id">ca-app-pub-4287636858571812~4464117517</string>
+
+    <string name="admob_banner_top">ca-app-pub-4287636858571812/7597547317</string>
+    <string name="admob_interstitial_after_result">ca-app-pub-4287636858571812/1541793900</string>
+
+    <string name="admob_banner_test">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_interstitial_test">ca-app-pub-3940256099942544/1033173712</string>
 </resources>

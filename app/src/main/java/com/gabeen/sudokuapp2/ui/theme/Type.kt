@@ -1,4 +1,4 @@
-package com.gabeen.sudokuapp.ui.theme
+package com.gabeen.sudokuapp2.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

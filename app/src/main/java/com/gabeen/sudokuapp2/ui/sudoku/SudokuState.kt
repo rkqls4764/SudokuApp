@@ -1,6 +1,6 @@
-package com.gabeen.sudokuapp.ui.sudoku
+package com.gabeen.sudokuapp2.ui.sudoku
 
-import com.gabeen.sudokuapp.domain.model.Difficulty
+import com.gabeen.sudokuapp2.domain.model.Difficulty
 
 data class SudokuState(
     val difficulty: Difficulty? = null,             // 난이도

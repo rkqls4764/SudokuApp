@@ -1,7 +1,7 @@
-package com.gabeen.sudokuapp.data.preference
+package com.gabeen.sudokuapp2.data.preference
 
 import android.content.Context
-import com.gabeen.sudokuapp.domain.model.Difficulty
+import com.gabeen.sudokuapp2.domain.model.Difficulty
 
 private const val PREF_NAME = "sudoku_record"
 

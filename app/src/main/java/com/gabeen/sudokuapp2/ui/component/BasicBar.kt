@@ -1,4 +1,4 @@
-package com.gabeen.sudokuapp.ui.component
+package com.gabeen.sudokuapp2.ui.component
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -11,7 +11,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import com.gabeen.sudokuapp.ui.theme.SoftBlack
+import com.gabeen.sudokuapp2.ui.theme.SoftBlack
 
 /* 홈 상단바 */
 @OptIn(ExperimentalMaterial3Api::class)

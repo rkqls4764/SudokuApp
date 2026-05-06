@@ -1,4 +1,4 @@
-package com.gabeen.sudokuapp.ui.component
+package com.gabeen.sudokuapp2.ui.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

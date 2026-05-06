@@ -1,9 +1,9 @@
-package com.gabeen.sudokuapp.ui.sudoku
+package com.gabeen.sudokuapp2.ui.sudoku
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gabeen.sudokuapp.data.preference.RecordPreferences
-import com.gabeen.sudokuapp.domain.model.Difficulty
+import com.gabeen.sudokuapp2.data.preference.RecordPreferences
+import com.gabeen.sudokuapp2.domain.model.Difficulty
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

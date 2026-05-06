@@ -1,9 +1,9 @@
-package com.gabeen.sudokuapp.ui.sudoku
+package com.gabeen.sudokuapp2.ui.sudoku
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.gabeen.sudokuapp.data.preference.RecordPreferences
+import com.gabeen.sudokuapp2.data.preference.RecordPreferences
 
 class SudokuViewModelFactory(
     private val context: Context

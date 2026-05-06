@@ -1,4 +1,4 @@
-package com.gabeen.sudokuapp.ui.home
+package com.gabeen.sudokuapp2.ui.home
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -34,12 +34,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.gabeen.sudokuapp.domain.model.Difficulty
-import com.gabeen.sudokuapp.ui.sudoku.SudokuViewModel
-import com.gabeen.sudokuapp.ui.theme.LevelGreen
-import com.gabeen.sudokuapp.ui.theme.LevelRed
-import com.gabeen.sudokuapp.ui.theme.LevelYellow
-import com.gabeen.sudokuapp.ui.theme.SoftBlack
+import com.gabeen.sudokuapp2.domain.model.Difficulty
+import com.gabeen.sudokuapp2.ui.sudoku.SudokuViewModel
+import com.gabeen.sudokuapp2.ui.theme.LevelGreen
+import com.gabeen.sudokuapp2.ui.theme.LevelRed
+import com.gabeen.sudokuapp2.ui.theme.LevelYellow
+import com.gabeen.sudokuapp2.ui.theme.SoftBlack
 
 /* 홈 화면 */
 @Composable
