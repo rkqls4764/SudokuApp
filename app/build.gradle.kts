@@ -12,7 +12,7 @@ android {
         applicationId = "com.gabeen.sudokuapp2"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
+        versionCode = 11
         versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -63,5 +63,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
     // AdMob
-    implementation("com.google.android.gms:play-services-ads:23.6.0")
+    implementation("com.google.android.gms:play-services-ads:24.2.0")
 }

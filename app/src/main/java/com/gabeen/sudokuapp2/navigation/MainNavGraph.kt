@@ -34,7 +34,7 @@ fun MainNavGraph(navController: NavHostController = rememberNavController()) {
     val sudokuViewModel: SudokuViewModel = viewModel(factory = factory)
 
     Scaffold(
-        topBar = {
+        bottomBar = {
             BannerAdView(
                 modifier = Modifier.fillMaxWidth(),
                 adUnitId = stringResource(R.string.admob_banner_top)
