@@ -60,6 +60,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    implementation("androidx.compose.material:material-icons-extended")
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
     // AdMob

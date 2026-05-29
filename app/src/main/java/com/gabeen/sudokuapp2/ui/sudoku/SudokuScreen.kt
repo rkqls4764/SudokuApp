@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.gabeen.sudokuapp2.R
 import com.gabeen.sudokuapp2.ui.ad.InterstitialAdManager
+import com.gabeen.sudokuapp2.ui.ad.RewardedAdManager
 import com.gabeen.sudokuapp2.ui.component.BasicButton
 import com.gabeen.sudokuapp2.ui.component.BasicIconButton
 import com.gabeen.sudokuapp2.ui.component.BlockTouchOverlay
@@ -78,6 +79,8 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
     val activity = context as Activity
     val adUnitId = stringResource(R.string.admob_interstitial_after_result)
 //    val adUnitId = stringResource(R.string.admob_interstitial_test)
+//    val rewardAdUnitId = stringResource(R.string.admob_reward_hint)
+    val rewardAdUnitId = stringResource(R.string.admob_reward_test)
 
     val sudokuState by sudokuViewModel.sudokuState.collectAsState()
 
@@ -90,11 +93,25 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
         }
     }
 
+    // 힌트 보상형 광고 로드
+    val rewardedAdmanager = remember {
+        RewardedAdManager(context).also {
+            it.loadAd(rewardAdUnitId)
+        }
+    }
+
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
             HomeTopBar(
                 title = sudokuState.timerState.elapsedText, // 타이머 출력
+                showHintIcon = !sudokuState.isFinished,
+                onClickHintIcon = {
+                    rewardedAdmanager.showAd(activity) {
+                        sudokuViewModel.useHint()
+                        rewardedAdmanager.loadAd(rewardAdUnitId)
+                    }
+                },
                 onClickActIcon = {
                     if (isClosing) return@HomeTopBar
                     isClosing = true
@@ -187,15 +204,21 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
                         )
                     }
 
-                    if (sudokuState.isNewRecord) {
+                    if (sudokuState.isFinished) {
+                        val resultText = when {
+                            sudokuState.isNewRecord -> "기록이 갱신되었습니다!"
+                            sudokuState.wrongCount == 0 -> "모두 맞췄습니다!"
+                            else -> "${sudokuState.wrongCount}개 틀렸습니다."
+                        }
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 70.dp),
+                                .padding(top = 30.dp),
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "기록이 갱신되었습니다!",
+                                text = resultText,
                                 color = SoftBlack,
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 20.sp
@@ -297,16 +320,34 @@ private fun SudokuCell(
     isFinished: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (isFinished) {
-        if (cellState.fixed) FixedCellBg else if (cellState.value == answer) LevelGreenBg else LevelRedBg
-    } else {
-        if (isSelect) BgBlue else if (cellState.fixed) FixedCellBg else Color.White
+    val backgroundColor = when {
+        cellState.isHint -> Color(0xFFFFF3B0)
+
+        isFinished -> {
+            if (cellState.fixed) FixedCellBg
+            else if (cellState.value == answer) LevelGreenBg
+            else LevelRedBg
+        }
+
+        isSelect -> BgBlue
+
+        cellState.fixed -> FixedCellBg
+
+        else -> Color.White
     }
 
-    val fontColor = if (isFinished) {
-        if (cellState.fixed) FixedNumberColor else if (cellState.value == answer) LevelGreen else LevelRed
-    } else {
-        if (cellState.fixed) FixedNumberColor else BasicBlue
+    val fontColor = when {
+        cellState.isHint -> Color(0xFFFF9800)
+
+        isFinished -> {
+            if (cellState.fixed) FixedNumberColor
+            else if (cellState.value == answer) LevelGreen
+            else LevelRed
+        }
+
+        cellState.fixed -> FixedNumberColor
+
+        else -> BasicBlue
     }
 
     val fontWeight = if (cellState.fixed) FontWeight.Medium else FontWeight.Bold

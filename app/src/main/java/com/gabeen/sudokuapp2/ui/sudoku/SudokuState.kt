@@ -11,7 +11,8 @@ data class SudokuState(
     val remainingCount: List<Int> = emptyList(),    // 채워야할 숫자 수
     val isMemo: Boolean = false,                    // 메모 모드 여부
     val isFinished: Boolean = false,                // 종료 여부
-    val isNewRecord: Boolean = false                // 기록 갱신 여부
+    val isNewRecord: Boolean = false,               // 기록 갱신 여부
+    val wrongCount: Int = 0                         // 틀린 개수
 ) {
     fun isAllCorrect(): Boolean {
         // 아직 게임 시작 안 됐거나 정답 없음
@@ -30,12 +31,27 @@ data class SudokuState(
             }
         }
     }
+
+    fun wrongCount(): Int {
+        var count = 0
+
+        for (r in 0 until 9) {
+            for (c in 0 until 9) {
+                if (cells[r][c].value != answer[r][c]) {
+                    count++
+                }
+            }
+        }
+
+        return count
+    }
 }
 
 data class CellState(
     val value: Int? = null,         // 입력 값 (1~9 or null)
     val fixed: Boolean = false,     // 문제에서 주어진 값인지 여부
-    val memo: Set<Int> = emptySet() // 메모
+    val memo: Set<Int> = emptySet(),// 메모
+    val isHint: Boolean = false
 )
 
 data class TimerState(
@@ -49,6 +65,5 @@ data class TimerState(
             val seconds = totalSeconds % 60
             val millis = (elapsedMillis % 1000) / 10 // 2자리
             return return String.format("%02d:%02d", minutes, seconds)
-//            return return String.format("%02d:%02d:%02d", minutes, seconds, millis)
         }
 }

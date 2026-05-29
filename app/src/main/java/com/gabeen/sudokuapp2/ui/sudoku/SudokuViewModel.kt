@@ -109,6 +109,7 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
         }
     }
 
+    /* 현재 비어진 칸에서 유효해가 한 개인지 검사 */
     private fun countSolutions(board: Array<IntArray>): Int {
         var count = 0
 
@@ -164,13 +165,49 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
         val state = _sudokuState.value
         val difficulty = state.difficulty ?: return
 
+        val wrongCount = state.wrongCount()
+
         // 전부 맞히면 최단 기록 갱신
         var isNew = false
         if (state.isAllCorrect()) {
             isNew = recordPreferences.saveRecord(difficulty, state.timerState.elapsedMillis)
         }
 
-        _sudokuState.update { it.copy(isFinished = true, isNewRecord = isNew) }
+        _sudokuState.update { it.copy(isFinished = true, isNewRecord = isNew, wrongCount = wrongCount) }
+    }
+
+    /* 힌트 사용 - 빈 칸 중 한 칸의 정답 공개 */
+    fun useHint() {
+        val state = _sudokuState.value
+
+        val emptyCells = mutableListOf<Pair<Int, Int>>()
+
+        for (r in 0 until 9) {
+            for (c in 0 until 9) {
+                if (state.cells[r][c].value == null && !state.cells[r][c].fixed) {
+                    emptyCells.add(r to c)
+                }
+            }
+        }
+
+        if (emptyCells.isEmpty()) return
+
+        val (row, col) = emptyCells.random()
+
+        val newCells = state.cells.map { it.toMutableList() }.toMutableList()
+
+        newCells[row][col] = newCells[row][col].copy(
+            value = state.answer[row][col],
+            fixed = true,
+            isHint = true
+        )
+
+        _sudokuState.update {
+            it.copy(
+                cells = newCells,
+                selectCellIdx = row * 9 + col
+            )
+        }
     }
 
     /* 입력 칸 선택 */

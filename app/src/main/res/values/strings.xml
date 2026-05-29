@@ -5,7 +5,9 @@
 
     <string name="admob_banner_top">ca-app-pub-4287636858571812/7597547317</string>
     <string name="admob_interstitial_after_result">ca-app-pub-4287636858571812/1541793900</string>
+    <string name="admob_reward_hint">ca-app-pub-4287636858571812/9037607137</string>
 
     <string name="admob_banner_test">ca-app-pub-3940256099942544/6300978111</string>
     <string name="admob_interstitial_test">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="admob_reward_test">ca-app-pub-3940256099942544/5224354917</string>
 </resources>
