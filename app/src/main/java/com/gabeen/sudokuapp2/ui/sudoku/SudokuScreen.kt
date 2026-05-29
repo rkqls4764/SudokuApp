@@ -35,6 +35,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,6 +87,12 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
 
     var isClosing by remember { mutableStateOf(false) }
 
+    LaunchedEffect(isClosing) {
+        if (isClosing) {
+            navController.popBackStack()
+        }
+    }
+
     // 전면 광고 로드
     val adManager = remember {
         InterstitialAdManager(context).also {
@@ -114,8 +121,10 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
                 },
                 onClickActIcon = {
                     if (isClosing) return@HomeTopBar
-                    isClosing = true
-                    navController.popBackStack()
+
+                    adManager.showAd(activity) {
+                        isClosing = true
+                    }
                 }
             )
         },
@@ -136,7 +145,6 @@ fun SudokuScreen(navController: NavController, sudokuViewModel: SudokuViewModel)
 
                             adManager.showAd(activity) {
                                 isClosing = true
-                                navController.popBackStack()
                             }
                         }
                     }
