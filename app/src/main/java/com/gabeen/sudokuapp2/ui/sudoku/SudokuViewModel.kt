@@ -34,11 +34,28 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
         java.util.Collections.shuffle(positions, rnd)
 
         val removeCount = blanks.coerceIn(0, 81)
-        for (i in 0 until removeCount) {
-            val pos = positions[i]
+        var removed = 0
+
+        for (pos in positions) {
+            if (removed >= removeCount) break
+
             val r = pos / 9
             val c = pos % 9
+
+            val backup = puzzle[r][c]
             puzzle[r][c] = 0
+
+            val testBoard = Array(9) { row ->
+                IntArray(9) { col ->
+                    puzzle[row][col]
+                }
+            }
+
+            if (countSolutions(testBoard) == 1) {
+                removed++
+            } else {
+                puzzle[r][c] = backup
+            }
         }
 
         // 채워야할 숫자 수
@@ -90,6 +107,70 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
                 nums[pattern(r, c)]
             }
         }
+    }
+
+    private fun countSolutions(board: Array<IntArray>): Int {
+        var count = 0
+
+        fun isValid(row: Int, col: Int, num: Int): Boolean {
+            for (i in 0 until 9) {
+                if (board[row][i] == num) return false
+                if (board[i][col] == num) return false
+            }
+
+            val startRow = row / 3 * 3
+            val startCol = col / 3 * 3
+
+            for (r in startRow until startRow + 3) {
+                for (c in startCol until startCol + 3) {
+                    if (board[r][c] == num) return false
+                }
+            }
+
+            return true
+        }
+
+        fun solve() {
+            if (count > 1) return
+
+            for (r in 0 until 9) {
+                for (c in 0 until 9) {
+                    if (board[r][c] == 0) {
+
+                        for (num in 1..9) {
+                            if (isValid(r, c, num)) {
+                                board[r][c] = num
+                                solve()
+                                board[r][c] = 0
+                            }
+                        }
+
+                        return
+                    }
+                }
+            }
+
+            count++
+        }
+
+        solve()
+        return count
+    }
+
+    /* 종료 */
+    fun finish() {
+        pauseTimer()
+
+        val state = _sudokuState.value
+        val difficulty = state.difficulty ?: return
+
+        // 전부 맞히면 최단 기록 갱신
+        var isNew = false
+        if (state.isAllCorrect()) {
+            isNew = recordPreferences.saveRecord(difficulty, state.timerState.elapsedMillis)
+        }
+
+        _sudokuState.update { it.copy(isFinished = true, isNewRecord = isNew) }
     }
 
     /* 입력 칸 선택 */
@@ -230,22 +311,6 @@ class SudokuViewModel(private val recordPreferences: RecordPreferences): ViewMod
         }
 
         _sudokuState.update { it.copy(cells = newCells, selectCellIdx = null, remainingCount = newRemaining, isMemo = false) }
-    }
-
-    /* 종료 */
-    fun finish() {
-        pauseTimer()
-
-        val state = _sudokuState.value
-        val difficulty = state.difficulty ?: return
-
-        // 전부 맞히면 최단 기록 갱신
-        var isNew = false
-        if (state.isAllCorrect()) {
-            isNew = recordPreferences.saveRecord(difficulty, state.timerState.elapsedMillis)
-        }
-
-        _sudokuState.update { it.copy(isFinished = true, isNewRecord = isNew) }
     }
 
     /* 기록 조회 */
